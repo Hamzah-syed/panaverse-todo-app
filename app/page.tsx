@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className='w-full h-screen bg-gradient-to-tr from-secondary to-primary justify-center px-4 flex items-center'>
       {/* Mobile */}
-      <div className='rounded-3xl px-2 relative  w-full max-w-md min-w-[280px] h-[520px] -mt-24
+      <div className='rounded-3xl px-2 relative  w-full max-w-md min-w-[280px] h-[520px] -mt-16
      shadow-2xl bg-gradient-to-tr from-white/30 to-white/20    backdropFilter'>
         {/* Todos */}
         {/* @ts-expect-error Server Component */}

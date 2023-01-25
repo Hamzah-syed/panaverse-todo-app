@@ -1,6 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const AddTodo = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -11,29 +13,36 @@ const AddTodo = () => {
   const isMutating = isFetching || isPending;
 
   async function handleSubmit() {
+    setIsFetching(true);
     try {
-      setIsFetching(true);
-      // Mutate external data source
-      const res = await fetch(`/api/create-todo`, {
-        method: "POST",
-        body: JSON.stringify({
-          task: (inputRef.current as HTMLInputElement)?.value as string,
-        } as { task: string }),
-      });
-      setIsFetching(false);
-      if (!res.ok) {
-        throw new Error(`HTTP Error: ${res.status}`);
+      if (!(inputRef.current as HTMLInputElement).value) {
+        throw new Error("Input field is required")
       } else {
-        (inputRef.current as HTMLInputElement).value = ""
-        startTransition(() => {
-          // Refresh the current route and fetch new data from the server without
-          // losing client-side browser or React state.
-          router.refresh();
+
+        // Mutate external data source
+        const res = await fetch(`/api/create-todo`, {
+          method: "POST",
+          body: JSON.stringify({
+            task: (inputRef.current as HTMLInputElement).value,
+          } as { task: string }),
         });
+
+        if (!res.ok) {
+          throw new Error(`HTTP Error: ${res.status}`);
+        } else {
+          (inputRef.current as HTMLInputElement).value = ""
+          toast.success("Task added successfully")
+          startTransition(() => {
+            // Refresh the current route and fetch new data from the server without
+            // losing client-side browser or React state.
+            router.refresh();
+          });
+        }
       }
     } catch (err) {
-      console.log((err as { message: string }).message);
+      toast.error((err as { message: string }).message)
     }
+    setIsFetching(false);
   }
 
   return (
@@ -46,6 +55,7 @@ const AddTodo = () => {
           ref={inputRef}
         />
         <button
+          type="button"
           disabled={isMutating}
           onClick={() => handleSubmit()}
           className="bg-gradient-to-tr from-primary to-secondary h-12 w-12 p-1 flex-none  
@@ -93,6 +103,7 @@ const AddTodo = () => {
           )}
         </button>
       </div>
+      <ToastContainer />
     </>
   );
 };

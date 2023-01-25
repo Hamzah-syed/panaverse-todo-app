@@ -24,7 +24,6 @@ const fetchData = async () => {
 
 const TodoList = async () => {
   const todosData = await fetchData();
-  console.log("Now",todosData)
   return (
     <Suspense fallback="loading">
       {typeof todosData !== "string" ? (
