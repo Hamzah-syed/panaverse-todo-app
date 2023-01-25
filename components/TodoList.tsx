@@ -1,34 +1,39 @@
 // Framer motion
 import { FC, Suspense } from "react";
-import TodoItem from "@/components/TodoItem"
+import TodoItem from "@/components/TodoItem";
 // import loadFeatures from "@/utils/features"
 
-import prisma from '@/lib/prismaClient';
+import prisma from "@/lib/prismaClient";
 
 const fetchData = async () => {
+  try {
     return await prisma.todo.findMany({
-        orderBy: {
-            sort_number: "desc",
-        },
-        select: {
-            id: true,
-            task: true,
-            sort_number: true,
-        }
-    })
-}
-
-
-
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        task: true,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    return (err as { message: string }).message;
+  }
+};
 
 const TodoList = async () => {
-    const todosData = await fetchData()
+  const todosData = await fetchData();
+  console.log("Now",todosData)
+  return (
+    <Suspense fallback="loading">
+      {typeof todosData !== "string" ? (
+        <TodoItem todosData={todosData} />
+      ) : (
+        <p>Something Went Wrong</p>
+      )}
+    </Suspense>
+  );
+};
 
-    return (
-        <Suspense fallback="loading">
-            <TodoItem todosData={todosData} />
-        </Suspense>
-    )
-}
-
-export default TodoList
+export default TodoList;

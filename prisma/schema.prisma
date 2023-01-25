@@ -13,7 +13,7 @@ datasource db {
 model Todo {
   id          Int      @id @default(autoincrement())
   task        String   @db.VarChar(255)
-  sort_number Int    @unique 
+  // sort_number Int    @unique  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

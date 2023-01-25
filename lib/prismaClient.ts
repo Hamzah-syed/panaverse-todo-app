@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
 
 
 export interface ITodo {
-    sort_number: number;
+    // sort_number: number;
     id: number;
     task: string;
 }
